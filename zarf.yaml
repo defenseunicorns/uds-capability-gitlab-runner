@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/zarf/main/zarf.schema.json
+kind: ZarfPackageConfig
+metadata:
+  name: gitlab-runner
+  description: "UDS GitLab Runner capability deployed via flux"
+  version: "0.0.1"
+  architecture: amd64
+
+components:
+  - name: gitlab-runner
+    required: true
+    description: "Deploy Gitlab Runner"
+    import:
+      url: oci://ghcr.io/defenseunicorns/zarf-skeleton/flux-app:0.0.1-skeleton
+      name: flux-app
+    images:
+    - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.10.0
+    - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.10.0
+    - registry1.dso.mil/ironbank/redhat/ubi/ubi8:8.7
