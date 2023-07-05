@@ -18,7 +18,7 @@ components:
       onDeploy:
         before:
           - cmd: cat values-gitlab-runner.yaml
-            description: Read gitlab values into variable.
+            description: Read gitlab runner values into variable.
             setVariables:
             - name: GITLAB_RUNNER_VALUES
               autoIndent: true
