@@ -2,7 +2,7 @@ application:
   name: gitlab-runner
   namespace: gitlab-runner
   path: chart
-  repository: https://repo1.dso.mil/big-bang/product/packages/gitlab-runner
+  repository: https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git
   tag: 0.51.0-bb.2
   values: |
     ###ZARF_VAR_GITLAB_RUNNER_VALUES###
