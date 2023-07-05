@@ -7,12 +7,31 @@ metadata:
   architecture: amd64
 
 components:
+  - name: gitlab-runner-values
+    files:
+      - source: values-gitlab-runner.yaml
+        target: values-gitlab-runner.yaml
   - name: gitlab-runner
     required: true
-    description: "Deploy Gitlab Runner"
-    import:
-      url: oci://ghcr.io/defenseunicorns/zarf-skeleton/flux-app:0.0.1-skeleton
-      name: flux-app
+    description: "Deploy gitlab-runner via flux"
+    actions:
+      onDeploy:
+        before:
+          - cmd: cat values-gitlab-runner.yaml
+            description: Read gitlab values into variable.
+            setVariables:
+            - name: GITLAB_RUNNER_VALUES
+              autoIndent: true
+    charts:
+      - name: flux-app
+        version: 0.1.0
+        url: https://github.com/defenseunicorns/zarf-skeleton-flux-app.git
+        gitPath: charts
+        namespace: bigbang
+        valuesFiles:
+          - gitlab-runner-flux-values.yaml
+    repos:
+      - https://repo1.dso.mil/big-bang/product/packages/gitlab.git
     images:
     - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.10.0
     - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.10.0
