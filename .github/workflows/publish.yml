@@ -50,3 +50,6 @@ jobs:
 
       - name: Publish gitlab runner package
         run: zarf package publish zarf-package-gitlab-runner-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability --no-progress
+
+      - name: Publish gitlab runner skeleton
+        run: zarf package publish . oci://ghcr.io/defenseunicorns/uds-capability
