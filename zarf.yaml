@@ -14,6 +14,7 @@ variables:
 
 components:
   - name: gitlab-runner-values
+    required: true
     files:
       - source: values-gitlab-runner.yaml
         target: values-gitlab-runner.yaml
@@ -36,7 +37,7 @@ components:
         valuesFiles:
           - gitlab-runner-flux-values.yaml
     repos:
-      - https://repo1.dso.mil/big-bang/product/packages/gitlab.git
+      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git
     images:
     - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.11.0"
     - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.11.0"
