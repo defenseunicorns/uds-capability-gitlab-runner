@@ -19,11 +19,11 @@ metrics:
 
 # When istio injected, add an annotation with the istio version to the manager pods only
 podAnnotations:
-  bigbang.dev/istioVersion: 1.17.2
+  bigbang.dev/istioVersion: 1.17.3
 
 monitoring:
   enabled: true
 
 # autoRegister requires kyverno
 autoRegister:
-  enabled: true
+  enabled: false
