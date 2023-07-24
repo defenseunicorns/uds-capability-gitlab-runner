@@ -175,4 +175,4 @@ deploy/dubbd-k3d: ## Deploy the k3d flavor of DUBBD
 	cd ./build && ./zarf package deploy zarf-package-dubbd-k3d-amd64-$(DUBBD_K3D_VERSION).tar.zst --confirm
 
 deploy/uds-capability-gitlab-runner: ## Deploy the gilab capability
-	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-*.tar.zst --confirm --components=gitlab-values
+	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-*.tar.zst --confirm
