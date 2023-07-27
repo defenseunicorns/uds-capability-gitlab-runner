@@ -99,7 +99,8 @@
       "versioning": "loose"
     },
     {
-      "matchPackageNames": ["big-bang/.*"],
+      "matchPackagePatterns": ["big-bang/.*"],
+      "matchDatasources": ["gitlab-tags"],
       "allowedVersions": "!/^v.*$/"
     }
   ]
