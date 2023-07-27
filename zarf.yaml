@@ -30,9 +30,10 @@ components:
             - name: GITLAB_RUNNER_VALUES
               autoIndent: true
     charts:
+      # renovate: datasource=helm
       - name: flux-app
-        version: 1.0.5
         url: https://defenseunicorns.github.io/uds-support-charts/
+        version: 1.0.5
         namespace: gitlab-runner
         valuesFiles:
           - gitlab-runner-flux-values.yaml

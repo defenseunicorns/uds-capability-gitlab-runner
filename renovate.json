@@ -1,0 +1,106 @@
+{
+  "enabled": true,
+  "forkProcessing": "enabled",
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    ":dependencyDashboard",
+    ":semanticPrefixFixDepsChoreOthers",
+    "config:base",
+    "group:all",
+    "replacements:all",
+    "workarounds:all"
+  ],
+  "timezone": "America/New_York",
+  "rebaseStalePrs": true,
+  "schedule": ["after 7am and before 9am every weekday"],
+  "dependencyDashboard": true,
+  "platform": "github",
+  "onboarding": false,
+  "requireConfig": false,
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "rebaseWhen": "conflicted",
+  "commitBodyTable": true,
+  "ignorePaths": ["archive/**"],
+  "suppressNotifications": ["prIgnoreNotification"],
+  "pre-commit": {
+    "enabled": true
+  },
+  "helm-values": {
+    "fileMatch": ["./.+\\.yaml$"]
+  },
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"],
+    "ignorePaths": [
+      "ansible",
+      "scripts",
+      ".github"
+    ]
+  },
+  "hostRules": [
+    {
+      "matchHost": "registry1.dso.mil",
+      "hostType": "docker",
+      "description": "Encrypted creds for registry1, scoped to this Github org using: https://github.com/renovatebot/renovate/blob/main/docs/usage/configuration-options.md#encrypted",
+      "encrypted": {
+        "username": "wcFMA/xDdHCJBTolARAAiqBNayinhszc5TvV7haI/oV8lYilMnlOm3F7LvNfaTPpr7PqkMkaXUWAVM4C4YYMCvn/zfS4k6p3U3a05AqksbcjjoLpHon0EcxkAkEGPbRwMe/I1zrcEXy61+E6yBUuJXmG2pYQ/Z8vYc6JwhyfBUhU4mGNGaywHA+g7WNx9XpxZN0x/ggI52KLa5xIC7NyTh3p5fkPAA9pORYEPt8yPvJleZacwmjrmIzq5v5/4f8DcM1xxKwZCe7U49xF6BBi2YiOZS+I6CpFGRA5TUmu40RtGRDajM0m2cFAgc1VTJCkDmw5UfOQNYIukXxX6vgDKHtx80+Cmvi7WfUwHHTUhT9ohw1z/s9syEnG9keWgzMkiL1MAzsxC49tydcsNXQHdZHxcsCtQz88u7Yf2csNR6w9DLapxzZPDAujD/z9IhHNk/36F6eP7LB1arceI0JwvlFf1c3U8qgn1ktj0MyrxMe7Hu6yq2DtS211WL8YGOl7j00HwbGD2EQHXMjaxnP0PhbPncmfUU0S29MeQ83V/1acQHIoDQdFGfr9CEU13ucLuorvH5y9kumvkTZi8lM/QQguzut++VyMY5nzch+z28oxgqVi90S5rrY7dykcKkN7/wbiBeKfsxdl0+oWrytF7MLg855Ux9WAQFzWN3VnHHVzOdeFaNPkKbYGpl7I3njSWQFUA4aFUWEvOV+VHOpTVhjgAhHWkD+B1s84FFpq1eImPf31odaMbhH2Z+n7K4uyvFL3PM+X+XPzKKtNgtCixDvHXCxN3LkgFOPdP/lE8uFFCTPQ0gtZ6LeQ",
+        "password": "wcFMA/xDdHCJBTolAQ/+JBbhrcVCvmcTshXr4dpxpwplNEqTH69pQEYI8BLQj0ezVZoyHGxld5Kb3axwcuPhULFJVW1PPpGWSorAG+ByC0FTq9cYTSQD49F4w4BEEKZIszmfKtzyabbWh5d/9K/INlpFn+KKXOvg5mOGCkHFe0MUmYGMUj16D/mezsrOrKBYihCRFJPcpk9QpQNlzMqqnmYOjPpozR8LVzmLV+ha5tBRhUCiCv/IdzETrNprXB8HCLinUJ1t9SNTjanIFPnmKLQ5p3O7udRxTsNh0ZOcVbJzWniwkUQotoqXOM5pFuoQUVICRSk+qPcA9m05mvJMCwWD9Htlf0XnuA8kkJD2/yWdnONNvmXxyRTXPL3XNzbotx83zDiOWQOI8fENK0ZrrnqzhTERIYHUSfG29PjSex98J2rWsgjnOUTx3Dm1y+bCXkd6VmS7C6z48gUNsH+i5NhgfSti0Y4oYM5m1WLbxjk4VVNieNCUFZlbMdMdsBN6plB6Xs1RCJ3JH6MTTvCznYSizSoN3yB2VaNsCab6kLvIyUj2GFOdfSxGoi1Z3qvVdPUZeMM1xDo8eqZTL/r8Cx32D1FMAArHc3PGMr20MmALRVf+nThMwBJ8iy9+3wPkKggLkql4qmpDoiTbCGIAkUfFTIJC29JNDr8iRB1+ZB1g3M7NyzBdYGpw6IonudrScAG7Beg8G9O/zvDj+1H6b+VrsHP3sObt2gvhfxHWjPj1BzYwIX4jZialRWOnc5FoNnoi4o5BDY8YbBkPFxfnKlOUouT+UiUCiV+XEAyok2XH1tTyJ0aAiLZnbHgCAsOytkKDv8xt0TEctBOWMmtCyBk"
+      }
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [".*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=helm\n .*- name: (?<depName>.*?)\n *url: (?<registryUrl>.*?)\n *version: (?<currentValue>.*)\n"
+      ],
+      "datasourceTemplate": "helm",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    },
+    {
+      "fileMatch": [".*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*?:\\s*['\"]?(?<currentValue>.*?)['\"]?\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    },
+    {
+      "fileMatch": [".*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: zarf-uri datasource=github-tags depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?uri: ['\"]https:\\/\\/github.com\\/defenseunicorns\\/zarf\\/releases\\/download\\/(?<currentValue>.*)\\/zarf_.*_Linux_amd64['\"]",
+        "# renovate: zarf-uri datasource=github-tags depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?uri: ['\"]https:\\/\\/github.com\\/defenseunicorns\\/zarf\\/releases\\/download\\/.*\\/zarf_(?<currentValue>.*)_Linux_amd64['\"]"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "datasourceTemplate": "github-tags"
+    },
+    {
+      "fileMatch": [".*\/?zarf\\.ya?ml$"],
+      "matchStrings": [
+        "-\\s+['\"](?<depName>[^:]+):(?<currentValue>.*)['\"]"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "datasourceTemplate": "docker",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    },
+    {
+      "fileMatch": ["^Makefile$"],
+      "matchStrings": [
+        "renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( extractVersion=(?<extractVersion>.*?))?( registryUrl=(?<registryUrl>.*?))?\\s.*?=\\s*['\"]?(?<currentValue>.*?)['\"]?\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver-coerced{{/if}}",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^(?<version>.*)${{/if}}"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["terraform"],
+      "matchDepTypes": ["module"],
+      "matchDatasources": ["github-tags", "git-tags"],
+      "versioning": "loose"
+    },
+    {
+      "matchPackageNames": ["big-bang/.*"],
+      "allowedVersions": "!/^v.*$/"
+    }
+  ]
+}
