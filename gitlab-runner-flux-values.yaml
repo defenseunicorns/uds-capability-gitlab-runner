@@ -6,7 +6,7 @@ application:
   repository: https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git
   ref:
     # renovate: datasource=gitlab-tags depName=big-bang/product/packages/gitlab-runner versioning=loose registryUrl=https://repo1.dso.mil
-    tag: 0.52.0-bb.0
+    tag: 0.52.0-bb.1
   values: |
     ###ZARF_VAR_GITLAB_RUNNER_VALUES###
   dependsOn:
