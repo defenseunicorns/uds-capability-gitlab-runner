@@ -1,13 +1,13 @@
 # The version of Zarf to use. To keep this repo as portable as possible the Zarf binary will be downloaded and added to
 # the build folder.
-ZARF_VERSION := v0.28.3
+ZARF_VERSION := v0.28.4
 
 # The version of the build harness container to use
 BUILD_HARNESS_REPO := ghcr.io/defenseunicorns/build-harness/build-harness
 # renovate: datasource=docker depName=ghcr.io/defenseunicorns/build-harness/build-harness
-BUILD_HARNESS_VERSION := 1.8.1
+BUILD_HARNESS_VERSION := 1.10.2
 # renovate: datasource=docker depName=ghcr.io/defenseunicorns/packages/dubbd-k3d extractVersion=^(?<version>\d+\.\d+\.\d+)
-DUBBD_K3D_VERSION := 0.5.0
+DUBBD_K3D_VERSION := 0.6.1
 
 # Figure out which Zarf binary we should use based on the operating system we are on
 ZARF_BIN := zarf
@@ -120,6 +120,13 @@ cluster/full: cluster/destroy cluster/create build/all deploy/all ## This will d
 cluster/create: ## Create a k3d cluster with metallb installed
 	k3d cluster create k3d-test-cluster --config utils/k3d/k3d-config.yaml -v /etc/machine-id:/etc/machine-id@server:*
 	k3d kubeconfig merge k3d-test-cluster -o /home/${USER}/cluster-kubeconfig.yaml
+	echo "Installing Calico..."
+	kubectl apply --wait=true -f https://k3d.io/v5.5.2/usage/advanced/calico.yaml 2>&1 >/dev/null
+	echo "Waiting for Calico to be ready..."
+	kubectl rollout status deployment/calico-kube-controllers -n kube-system --watch --timeout=90s 2>&1 >/dev/null
+	kubectl rollout status daemonset/calico-node -n kube-system --watch --timeout=90s 2>&1 >/dev/null
+	kubectl wait --for=condition=Ready pods --all --all-namespaces 2>&1 >/dev/null
+	echo
 	utils/metallb/install.sh
 	echo "Cluster is ready!"
 
@@ -130,7 +137,7 @@ cluster/destroy: ## Destroy the k3d cluster
 # Build Section
 ########################################################################
 
-build/all: build build/zarf build/zarf-init.sha256 build/dubbd-pull-k3d.sha256 build/uds-capability-gitlab-runner ##
+build/all: build build/zarf build/zarf-init.sha256 build/dubbd-pull-k3d.sha256 build/test-pkg-deps build/uds-capability-gitlab-runner ##
 
 build: ## Create build directory
 	mkdir -p build
@@ -160,6 +167,10 @@ build/dubbd-pull-k3d.sha256: | build ## Download dubbd k3d oci package
 	echo "Creating shasum of the dubbd-k3d package"
 	shasum -a 256 build/zarf-package-dubbd-k3d-amd64-$(DUBBD_K3D_VERSION).tar.zst | awk '{print $$1}' > build/dubbd-pull-k3d.sha256
 
+build/test-pkg-deps: | build ## Build package dependencies for testing
+	build/zarf package create utils/pkg-deps/namespaces/ --skip-sbom --confirm --output-directory build
+	build/zarf package create utils/pkg-deps/gitlab-runner/rbac/ --skip-sbom --confirm --output-directory build
+
 build/uds-capability-gitlab-runner: | build ## Build the gitlab runner capability
 	build/zarf package create . --skip-sbom --confirm --output-directory build
 
@@ -167,7 +178,7 @@ build/uds-capability-gitlab-runner: | build ## Build the gitlab runner capabilit
 # Deploy Section
 ########################################################################
 
-deploy/all: deploy/init deploy/dubbd-k3d deploy/uds-capability-gitlab-runner ##
+deploy/all: deploy/init deploy/dubbd-k3d deploy/test-pkg-deps deploy/uds-capability-gitlab-runner ##
 
 deploy/init: ## Deploy the zarf init package
 	./build/zarf init --confirm --components=git-server
@@ -175,5 +186,9 @@ deploy/init: ## Deploy the zarf init package
 deploy/dubbd-k3d: ## Deploy the k3d flavor of DUBBD
 	cd ./build && ./zarf package deploy zarf-package-dubbd-k3d-amd64-$(DUBBD_K3D_VERSION).tar.zst --confirm
 
-deploy/uds-capability-gitlab-runner: ## Deploy the gilab capability
-	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-*.tar.zst --confirm
+deploy/test-pkg-deps: ## Deploy the package dependencies needed for testing the gitlab capability
+	cd ./build && ./zarf package deploy zarf-package-swf-namespaces-* --confirm
+	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-rbac* --confirm
+
+deploy/uds-capability-gitlab-runner: ## Deploy the gilab-runner capability
+	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-amd*.tar.zst --confirm

@@ -1,0 +1,5 @@
+namespaces:
+  - name: gitlab-runner-sandbox
+    labels:
+      istio-injection: enabled
+      zarf.dev/agent: ignore
