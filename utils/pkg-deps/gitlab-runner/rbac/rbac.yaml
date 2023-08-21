@@ -22,5 +22,6 @@ subjects:
   name: default
   namespace: gitlab-runner
 roleRef:
+  apiGroup: ""
   kind: ClusterRole
   name: gitlab-runner-sandbox
