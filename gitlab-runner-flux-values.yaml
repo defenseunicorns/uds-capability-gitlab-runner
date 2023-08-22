@@ -56,7 +56,7 @@ application:
 
     # autoRegister requires kyverno
     autoRegister:
-      enabled: true
+      enabled: ###ZARF_VAR_AUTO_REGISTER###
 
     unregisterRunners: true
 

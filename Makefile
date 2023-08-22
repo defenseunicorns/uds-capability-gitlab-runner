@@ -118,10 +118,10 @@ test-ssh: ## Run this if you set SKIP_TEARDOWN=1 and want to SSH into the still-
 cluster/full: cluster/destroy cluster/create build/all deploy/all ## This will destroy any existing cluster, create a new one, then build and deploy all
 
 cluster/create: ## Create a k3d cluster with metallb installed
-	k3d cluster create k3d-test-cluster --config utils/k3d/k3d-config.yaml -v /etc/machine-id:/etc/machine-id@server:*
+	K3D_FIX_MOUNTS=1 k3d cluster create k3d-test-cluster --config utils/k3d/k3d-config.yaml
 	k3d kubeconfig merge k3d-test-cluster -o /home/${USER}/cluster-kubeconfig.yaml
 	echo "Installing Calico..."
-	kubectl apply --wait=true -f https://k3d.io/v5.5.2/usage/advanced/calico.yaml 2>&1 >/dev/null
+	kubectl apply --wait=true -f utils/calico/calico.yaml 2>&1 >/dev/null
 	echo "Waiting for Calico to be ready..."
 	kubectl rollout status deployment/calico-kube-controllers -n kube-system --watch --timeout=90s 2>&1 >/dev/null
 	kubectl rollout status daemonset/calico-node -n kube-system --watch --timeout=90s 2>&1 >/dev/null
@@ -169,7 +169,7 @@ build/dubbd-pull-k3d.sha256: | build ## Download dubbd k3d oci package
 
 build/test-pkg-deps: | build ## Build package dependencies for testing
 	build/zarf package create utils/pkg-deps/namespaces/ --skip-sbom --confirm --output-directory build
-	build/zarf package create utils/pkg-deps/gitlab-runner/rbac/ --skip-sbom --confirm --output-directory build
+	build/zarf package create utils/pkg-deps/rbac/ --skip-sbom --confirm --output-directory build
 
 build/uds-capability-gitlab-runner: | build ## Build the gitlab runner capability
 	build/zarf package create . --skip-sbom --confirm --output-directory build

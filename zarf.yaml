@@ -14,6 +14,8 @@ variables:
         namespace: bigbang
   - name: GITLAB_RUNNER_CREATE_NAMESPACE
     default: "true"
+  - name: AUTO_REGISTER
+    default: "false"
 
 components:
   - name: istio-version
