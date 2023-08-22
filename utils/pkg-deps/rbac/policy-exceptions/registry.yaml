@@ -17,3 +17,6 @@ spec:
     - resources:
         namespaces:
         - gitlab-runner-sandbox
+    - resources:
+        namespaces:
+        - gitlab
