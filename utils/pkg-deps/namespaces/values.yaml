@@ -3,3 +3,10 @@ namespaces:
     labels:
       istio-injection: enabled
       zarf.dev/agent: ignore
+  - name: gitlab
+    labels:
+      istio-injection: disabled
+      zarf.dev/agent: ignore
+  - name: gitlab-runner
+    labels:
+      istio-injection: enabled

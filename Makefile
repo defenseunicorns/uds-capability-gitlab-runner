@@ -169,6 +169,7 @@ build/dubbd-pull-k3d.sha256: | build ## Download dubbd k3d oci package
 
 build/test-pkg-deps: | build ## Build package dependencies for testing
 	build/zarf package create utils/pkg-deps/namespaces/ --skip-sbom --confirm --output-directory build
+	build/zarf package create utils/pkg-deps/gitlab/ --skip-sbom --confirm --output-directory build
 	build/zarf package create utils/pkg-deps/rbac/ --skip-sbom --confirm --output-directory build
 
 build/uds-capability-gitlab-runner: | build ## Build the gitlab runner capability
@@ -188,7 +189,8 @@ deploy/dubbd-k3d: ## Deploy the k3d flavor of DUBBD
 
 deploy/test-pkg-deps: ## Deploy the package dependencies needed for testing the gitlab capability
 	cd ./build && ./zarf package deploy zarf-package-swf-namespaces-* --confirm
+	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-gitlab* --confirm -l trace
 	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-rbac* --confirm
 
 deploy/uds-capability-gitlab-runner: ## Deploy the gilab-runner capability
-	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-amd*.tar.zst --confirm
+	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-amd*.tar.zst --confirm --set GITLAB_RUNNER_DEPENDS_ON="[]"

@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/zarf/main/zarf.schema.json
+kind: ZarfPackageConfig
+metadata:
+  name: gitlab-runner-gitlab
+  version: "0.0.1"
+  architecture: amd64
+  yolo: true
+
+components:
+  - name: gitlab-yolo
+    required: true
+    charts:
+      - name: gitlab
+        version: 7.3.0
+        namespace: gitlab
+        url: https://charts.gitlab.io
+        valuesFiles:
+          - values.yaml
+  - name: gitab-runner-secret
+    required: true
+    actions:
+      onDeploy:
+        after:
+          - cmd: kubectl get secret gitlab-gitlab-runner-secret -n gitlab -o=jsonpath={.data.runner-registration-token} | base64 -d
+            setVariable: RUNNER_SECRET
+          - cmd: kubectl create secret generic gitlab-gitlab-runner-secret --from-literal=runner-registration-token="${ZARF_VAR_RUNNER_SECRET}" -n gitlab-runner --from-literal=runner-token=""

@@ -13,7 +13,7 @@ variables:
       - name: gitlab
         namespace: bigbang
   - name: GITLAB_RUNNER_CREATE_NAMESPACE
-    default: "true"
+    default: "false"
   - name: AUTO_REGISTER
     default: "false"
 
