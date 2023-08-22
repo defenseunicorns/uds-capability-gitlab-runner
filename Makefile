@@ -189,7 +189,7 @@ deploy/dubbd-k3d: ## Deploy the k3d flavor of DUBBD
 
 deploy/test-pkg-deps: ## Deploy the package dependencies needed for testing the gitlab capability
 	cd ./build && ./zarf package deploy zarf-package-swf-namespaces-* --confirm
-	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-gitlab* --confirm -l trace
+	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-gitlab* --confirm
 	cd ./build && ./zarf package deploy zarf-package-gitlab-runner-rbac* --confirm
 
 deploy/uds-capability-gitlab-runner: ## Deploy the gilab-runner capability
