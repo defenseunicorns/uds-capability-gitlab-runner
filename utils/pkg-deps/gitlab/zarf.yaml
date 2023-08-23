@@ -7,6 +7,12 @@ metadata:
   yolo: true
 
 components:
+  - name: gitlab-kyverno-exception
+    required: true
+    manifests:
+      - name: kyverno-exceptions
+        files:
+          - policy-exceptions/registry.yaml
   - name: gitlab-yolo
     required: true
     charts:
