@@ -3,37 +3,36 @@ kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner
   description: "UDS GitLab Runner capability deployed via flux"
-  version: "0.0.3"
+  version: "0.0.4"
   architecture: amd64
 
 variables:
   - name: GITLAB_RUNNER_DEPENDS_ON
-    default: "[]"
+    autoIndent: true
+    default: |
+      - name: gitlab
+        namespace: bigbang
   - name: GITLAB_RUNNER_CREATE_NAMESPACE
-    default: "true"
+    default: "false"
+  - name: AUTO_REGISTER
+    default: "false"
 
 components:
-  - name: gitlab-runner-values
+  - name: istio-version
     required: true
-    files:
-      - source: values-gitlab-runner.yaml
-        target: values-gitlab-runner.yaml
-  - name: gitlab-runner
-    required: true
-    description: "Deploy gitlab-runner via flux"
     actions:
       onDeploy:
         before:
-          - cmd: cat values-gitlab-runner.yaml
-            description: Read gitlab runner values into variable.
-            setVariables:
-            - name: GITLAB_RUNNER_VALUES
-              autoIndent: true
+          - cmd: kubectl get deployment -n monitoring monitoring-monitoring-kube-operator -o=jsonpath='{.spec.template.metadata.annotations.bigbang\.dev/istioVersion}'
+            setVariable: ISTIO_VERSION
+  - name: gitlab-runner
+    required: true
+    description: "Deploy gitlab-runner via flux"
     charts:
       # renovate: datasource=helm
       - name: flux-app
         url: https://defenseunicorns.github.io/uds-support-charts/
-        version: 1.0.5
+        version: 1.0.7
         namespace: gitlab-runner
         valuesFiles:
           - gitlab-runner-flux-values.yaml

@@ -27,10 +27,6 @@ func TestAllServicesRunning(t *testing.T) { //nolint:funlen
 		output, err := platform.RunSSHCommandAsSudo(`kubectl get nodes`)
 		require.NoError(t, err, output)
 
-		// Create bogus runner token secret
-		output, err = platform.RunSSHCommandAsSudo(`kubectl create secret generic gitlab-gitlab-runner-secret -n gitlab-runner --from-literal=runner-token=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 64) --from-literal=runner-registration-token=$(head -c 512 /dev/urandom | LC_CTYPE=C tr -cd 'a-zA-Z0-9' | head -c 64)`)
-		require.NoError(t, err, output)
-
 		// Wait for the GitLab Runner Deployment to exist.
 		output, err = platform.RunSSHCommandAsSudo(`timeout 1200 bash -c "while ! kubectl get deployment gitlab-runner -n gitlab-runner; do sleep 5; done"`)
 		require.NoError(t, err, output)
