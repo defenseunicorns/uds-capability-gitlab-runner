@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/zarf/main/zarf.schema.json
 kind: ZarfPackageConfig
 metadata:
-  name: swf-namespaces
+  name: gitlab-runner-namespaces
   description: "package used to deploy needed namespaces"
   version: "0.0.1"
   architecture: amd64
