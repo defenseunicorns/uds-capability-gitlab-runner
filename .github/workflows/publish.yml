@@ -47,9 +47,9 @@ jobs:
           username: ${{ secrets.REGISTRY1_USERNAME }}
           password: ${{ secrets.REGISTRY1_PASSWORD }}
 
-      - name: Build gitlab runner package
-        run: zarf package create --confirm --no-progress
-
+      ####
+      # Build and publish dependency packages to use in a dev UDS Bundle
+      ####
       - name: Build dev-dependency gitlab runner namespace package
         run: cd uds-capability-gitlab-runner/utils/pkg-deps/namespaces && zarf package create --confirm --no-progress
 
@@ -61,6 +61,12 @@ jobs:
 
       - name: Publish dev-dependency gitlab runner rbac package
         run: cd uds-capability-gitlab-runner/utils/pkg-deps/rbac && zarf package publish zarf-package-gitlab-runner-rbac-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
+
+      ####
+      # Build and publish capability package and skeleton
+      ####
+      - name: Build gitlab runner package
+        run: zarf package create --confirm --no-progress
 
       - name: Publish gitlab runner package
         run: zarf package publish zarf-package-gitlab-runner-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability --no-progress
