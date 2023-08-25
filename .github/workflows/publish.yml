@@ -51,16 +51,16 @@ jobs:
       # Build and publish dependency packages to use in a dev UDS Bundle
       ####
       - name: Build dev-dependency gitlab runner namespace package
-        run: cd uds-capability-gitlab-runner/utils/pkg-deps/namespaces && zarf package create --confirm --no-progress
+        run: cd utils/pkg-deps/namespaces && zarf package create --confirm --no-progress
 
       - name: Build dev-dependency gitlab runner rbac package
-        run: cd uds-capability-gitlab-runner/utils/pkg-deps/rbac && zarf package create --confirm --no-progress
+        run: cd utils/pkg-deps/rbac && zarf package create --confirm --no-progress
 
       - name: Publish dev-dependency gitlab runner namespace package
-        run: cd uds-capability-gitlab-runner/utils/pkg-deps/namespaces zarf package publish zarf-package-gitlab-runner-namespaces-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
+        run: cd utils/pkg-deps/namespaces zarf package publish zarf-package-gitlab-runner-namespaces-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
 
       - name: Publish dev-dependency gitlab runner rbac package
-        run: cd uds-capability-gitlab-runner/utils/pkg-deps/rbac && zarf package publish zarf-package-gitlab-runner-rbac-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
+        run: cd utils/pkg-deps/rbac && zarf package publish zarf-package-gitlab-runner-rbac-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
 
       ####
       # Build and publish capability package and skeleton
