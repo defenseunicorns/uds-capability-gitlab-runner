@@ -3,7 +3,7 @@ kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner
   description: "UDS GitLab Runner capability deployed via flux"
-  version: "0.0.4"
+  version: "0.0.5"
   architecture: amd64
 
 variables:
@@ -15,7 +15,7 @@ variables:
   - name: GITLAB_RUNNER_CREATE_NAMESPACE
     default: "false"
   - name: AUTO_REGISTER
-    default: "false"
+    default: "true"
 
 components:
   - name: istio-version
