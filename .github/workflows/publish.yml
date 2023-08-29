@@ -28,10 +28,10 @@ jobs:
         uses: supplypike/setup-bin@v3
         with:
           # renovate: zarf-uri datasource=github-tags depName=defenseunicorns/zarf
-          uri: 'https://github.com/defenseunicorns/zarf/releases/download/v0.29.0/zarf_v0.29.0_Linux_amd64'
+          uri: 'https://github.com/defenseunicorns/zarf/releases/download/v0.29.1/zarf_v0.29.1_Linux_amd64'
           name: 'zarf'
           # renovate: datasource=github-tags depName=defenseunicorns/zarf versioning=semver
-          version: 'v0.29.0'
+          version: 'v0.29.1'
 
       - name: Login to GHCR
         uses: docker/login-action@v2
@@ -50,14 +50,9 @@ jobs:
       ####
       # Build and publish dependency packages to use in a dev UDS Bundle
       ####
-      - name: Build dev-dependency gitlab runner namespace package
-        run: cd utils/pkg-deps/namespaces && zarf package create --confirm --no-progress
 
       - name: Build dev-dependency gitlab runner rbac package
         run: cd utils/pkg-deps/rbac && zarf package create --confirm --no-progress
-
-      - name: Publish dev-dependency gitlab runner namespace package
-        run: cd utils/pkg-deps/namespaces && zarf package publish zarf-package-gitlab-runner-namespaces-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
 
       - name: Publish dev-dependency gitlab runner rbac package
         run: cd utils/pkg-deps/rbac && zarf package publish zarf-package-gitlab-runner-rbac-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
