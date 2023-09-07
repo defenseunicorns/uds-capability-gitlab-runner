@@ -3,7 +3,7 @@ kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner
   description: "UDS GitLab Runner capability deployed via flux"
-  version: "0.0.5"
+  version: "0.0.6"
   architecture: amd64
 
 variables:
@@ -42,3 +42,14 @@ components:
     - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.11.0"
     - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.11.0"
     - "registry1.dso.mil/ironbank/redhat/ubi/ubi8:8.8"
+    actions:
+      onDeploy:
+        after:
+          - wait:
+              cluster:
+                kind: helmRelease
+                name: gitlab-runner
+                condition: Ready
+                namespace: bigbang
+            maxRetries: 3
+            description: GitLab-Runner HelmRelease to be Ready
