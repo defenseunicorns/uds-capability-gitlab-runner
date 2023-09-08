@@ -61,13 +61,13 @@ jobs:
       # Build and publish dependency packages to use in a dev UDS Bundle
       ####
 
-      - name: Build dev-dependency gitlab runner rbac package
+      - name: Build and publish dev-dependency gitlab runner rbac package
         run: cd utils/pkg-deps/rbac && zarf package create --confirm --no-progress --output oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency
 
       ####
       # Build and publish capability package and skeleton
       ####
-      - name: Build gitlab runner package
+      - name: Build and publish gitlab runner package
         run: zarf package create --confirm --no-progress --output oci://ghcr.io/defenseunicorns/uds-capability
 
       - name: Publish gitlab runner skeleton
