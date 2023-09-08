@@ -189,7 +189,7 @@ deploy/test-pkg-deps: | build/zarf ## Deploy the package dependencies needed for
 	cd build && ./zarf package deploy zarf-package-gitlab-runner-rbac* --confirm
 
 deploy/uds-capability-gitlab-runner: | build/zarf ## Deploy the gitlab-runner capability
-	cd build && ./zarf package deploy zarf-package-gitlab-runner-amd*.tar.zst --confirm
+	cd build && ./zarf package deploy zarf-package-gitlab-runner-amd*.tar.zst --confirm --set GITLAB_RUNNER_DEPENDS_ON="[]"
 
 ########################################################################
 # Macro Section
