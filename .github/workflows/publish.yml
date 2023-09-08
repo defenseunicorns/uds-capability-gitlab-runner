@@ -24,6 +24,16 @@ jobs:
           path: "~/.zarf-cache"
           key: zarf-cache
 
+      - name: Free GH runner build space
+        run: |
+          df -h
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          df -h
+
       - name: Install zarf
         uses: supplypike/setup-bin@v3
         with:
@@ -52,19 +62,13 @@ jobs:
       ####
 
       - name: Build dev-dependency gitlab runner rbac package
-        run: cd utils/pkg-deps/rbac && zarf package create --confirm --no-progress
-
-      - name: Publish dev-dependency gitlab runner rbac package
-        run: cd utils/pkg-deps/rbac && zarf package publish zarf-package-gitlab-runner-rbac-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency --no-progress
+        run: cd utils/pkg-deps/rbac && zarf package create --confirm --no-progress --output oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency
 
       ####
       # Build and publish capability package and skeleton
       ####
       - name: Build gitlab runner package
-        run: zarf package create --confirm --no-progress
-
-      - name: Publish gitlab runner package
-        run: zarf package publish zarf-package-gitlab-runner-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability --no-progress
+        run: zarf package create --confirm --no-progress --output oci://ghcr.io/defenseunicorns/uds-capability
 
       - name: Publish gitlab runner skeleton
         run: zarf package publish . oci://ghcr.io/defenseunicorns/uds-capability
