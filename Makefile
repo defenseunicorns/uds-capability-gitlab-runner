@@ -14,7 +14,7 @@ DUBBD_K3D_VERSION := 0.8.1
 ZARF_BIN := zarf
 UNAME_S := $(shell uname -s)
 UNAME_M := $(shell uname -m)
-	ifeq ($(UNAME_M),x86_64)
+ifeq ($(UNAME_M),x86_64)
     ARCH := amd64
 else ifeq ($(UNAME_M),amd64)
     ARCH := amd64
