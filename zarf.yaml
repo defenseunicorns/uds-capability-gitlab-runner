@@ -3,7 +3,7 @@ kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner
   description: "UDS GitLab Runner capability deployed via flux"
-  version: "0.0.6"
+  version: "0.0.7"
   architecture: amd64
 
 variables:
@@ -51,5 +51,5 @@ components:
                 name: gitlab-runner
                 condition: Ready
                 namespace: bigbang
-            maxRetries: 3
+            maxTotalSeconds: 900
             description: GitLab-Runner HelmRelease to be Ready
