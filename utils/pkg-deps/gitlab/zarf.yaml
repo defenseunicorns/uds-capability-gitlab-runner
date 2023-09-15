@@ -29,4 +29,5 @@ components:
         after:
           - cmd: kubectl get secret gitlab-gitlab-runner-secret -n gitlab -o=jsonpath={.data.runner-registration-token} | base64 -d
             setVariable: RUNNER_SECRET
+          - cmd: kubectl delete secret gitlab-gitlab-runner-secret -n gitlab-runner 2>&1 || true
           - cmd: kubectl create secret generic gitlab-gitlab-runner-secret --from-literal=runner-registration-token="${ZARF_VAR_RUNNER_SECRET}" -n gitlab-runner --from-literal=runner-token=""

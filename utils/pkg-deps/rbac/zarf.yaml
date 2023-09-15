@@ -25,4 +25,5 @@ components:
         before:
           - cmd: kubectl delete secret private-registry -n gitlab-runner-sandbox
         after:
+          - cmd: kubectl delete secret private-registry -n gitlab-runner-sandbox 2>&1 || true
           - cmd: kubectl create secret generic private-registry --from-file=.dockerconfigjson=$(printf ~/.docker/config.json) --type=kubernetes.io/dockerconfigjson -n gitlab-runner-sandbox
