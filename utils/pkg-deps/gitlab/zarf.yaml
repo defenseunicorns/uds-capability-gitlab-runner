@@ -6,16 +6,6 @@ metadata:
   architecture: amd64
   yolo: true
 
-variables:
-  - name: RUNNER_TOKEN
-    default: ""
-    prompt: false
-    autoIndent: true
-  - name: RUNNER_REGISTRATION_TOKEN
-    default: ""
-    prompt: false
-    autoIndent: true
-
 components:
   - name: gitlab-kyverno-exception
     required: true
@@ -39,12 +29,10 @@ components:
         after:
           - cmd: kubectl get secret gitlab-gitlab-runner-secret -n gitlab -o=jsonpath={.data.runner-registration-token} | base64 -d
             setVariable: RUNNER_REGISTRATION_TOKEN
-          # - cmd: kubectl delete secret gitlab-gitlab-runner-secret -n gitlab-runner 2>&1 || true
-          # - cmd: kubectl create secret generic gitlab-gitlab-runner-secret --from-literal=runner-registration-token="${ZARF_VAR_RUNNER_SECRET}" -n gitlab-runner --from-literal=runner-token=""
-  
   - name: gitlab-gitlab-runner-secret
     required: true
     manifests:
       - name: gitlab-gitlab-runner-secret
+        namespace: gitlab-runner
         files:
           - secret.yaml
