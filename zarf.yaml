@@ -3,7 +3,7 @@ kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner
   description: "UDS GitLab Runner capability deployed via flux"
-  version: "0.0.7"
+  version: "0.0.8"
   architecture: amd64
 
 variables:
