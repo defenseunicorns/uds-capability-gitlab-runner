@@ -37,7 +37,7 @@ components:
         valuesFiles:
           - gitlab-runner-flux-values.yaml
     repos:
-      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git
+      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git@0.52.0-bb.4
     images:
     - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.11.0"
     - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.11.0"
