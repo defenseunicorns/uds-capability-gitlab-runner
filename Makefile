@@ -165,7 +165,7 @@ build/dubbd-k3d: | build/zarf ## Download dubbd k3d oci package
 
 build/test-pkg-deps: | build/zarf ## Build package dependencies for testing
 	cd build && ./zarf package create ../utils/pkg-deps/namespaces/ --skip-sbom --confirm
-	# cd build && ./zarf package create ../utils/pkg-deps/gitlab/ --skip-sbom --confirm
+	cd build && ./zarf package create ../utils/pkg-deps/gitlab/ --skip-sbom --confirm
 	cd build && ./zarf package create ../utils/pkg-deps/rbac/ --skip-sbom --confirm
 
 build/uds-capability-gitlab-runner: | build/zarf ## Build the gitlab-runner capability
@@ -185,7 +185,7 @@ deploy/dubbd-k3d: | build/zarf ## Deploy the k3d flavor of DUBBD
 
 deploy/test-pkg-deps: | build/zarf ## Deploy the package dependencies needed for testing the gitlab-runner capability
 	cd build && ./zarf package deploy zarf-package-gitlab-runner-namespaces-* --confirm
-	# cd build && ./zarf package deploy zarf-package-gitlab-runner-gitlab* --confirm
+	cd build && ./zarf package deploy zarf-package-gitlab-runner-gitlab* --confirm
 	cd build && ./zarf package deploy zarf-package-gitlab-runner-rbac* --confirm
 
 deploy/uds-capability-gitlab-runner: | build/zarf ## Deploy the gitlab-runner capability
