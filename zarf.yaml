@@ -3,7 +3,7 @@ kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner
   description: "UDS GitLab Runner capability deployed via flux"
-  version: "0.0.8"
+  version: "0.0.9"
   architecture: amd64
 
 variables:
@@ -37,11 +37,11 @@ components:
         valuesFiles:
           - gitlab-runner-flux-values.yaml
     repos:
-      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git@0.52.0-bb.6
+      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git@0.52.0-bb.7
     images:
-    - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.11.0"
-    - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.11.0"
-    - "registry1.dso.mil/ironbank/redhat/ubi/ubi8:8.8"
+      - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v15.11.0"
+      - "registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v15.11.0"
+      - "registry1.dso.mil/ironbank/redhat/ubi/ubi8:8.8"
     actions:
       onDeploy:
         after:
