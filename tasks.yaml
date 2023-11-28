@@ -1,0 +1,210 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/defenseunicorns/uds-cli/main/tasks.schema.json
+variables:
+  - name: ZARF_VERSION
+    default: v0.31.2
+  - name: DUBBD_K3D_VERSION
+    default: 0.13.0
+  - name: METALLB_VERSION
+    default: 0.0.5
+
+tasks:
+########################################################################
+# Macro Section
+########################################################################
+  - name: all
+    actions:
+      - task: build-all
+      - task: cluster-reset
+      - task: deploy-all
+
+  - name: rebuild
+    actions:
+      - task: clean
+      - task: build-all
+
+  - name: cluster-reset
+    actions:
+      - task: cluster-destroy
+      - task: cluster-create
+      - task: cluster-calico
+
+  - name: build-all
+    actions:
+      - task: build
+      - task: build-zarf
+      - task: build-zarf-init
+      - task: build-metallb
+      - task: build-test-pkg-deps
+      - task: build-uds-capability-gitlab-runner
+
+  - name: deploy-all
+    actions:
+      - task: deploy-init
+      - task: deploy-metallb
+      - task: deploy-dubbd-k3d
+      - task: deploy-test-pkg-deps
+      - task: deploy-uds-capability-gitlab-runner
+
+  - name: deploy-no-gitlab
+    actions:
+      - task: deploy-namespaces
+      - task: deploy-rbac
+      - task: deploy-uds-capability-gitlab-runner
+
+########################################################################
+# Get OS and CPU Architecture
+########################################################################
+  - name: set-os-arch
+    actions:
+      - cmd: |
+          ARCH=$(uname -m)
+          [ "$ARCH" = "x86_64" ] && ARCH="amd64"
+          echo $ARCH
+        setVariables:
+          - name: ARCH
+            sensitive: false
+      - cmd: uname -s
+        setVariables:
+          - name: PLATFORM
+            sensitive: false
+
+########################################################################
+# Set Network Range
+########################################################################
+  - name: set-network-range
+    actions:
+      - cmd: |
+          NETWORK_BASE=$(kubectl get nodes -o=jsonpath='{.items[0].metadata.annotations.k3s\.io/internal-ip}' | cut -d '.' --fields '1 2 3')
+          NETWORK_RANGE_START="${NETWORK_BASE}.200"
+          echo $NETWORK_RANGE_START
+        setVariables:
+          - name: NETWORK_RANGE_START
+            sensitive: false
+      - cmd: |
+          NETWORK_BASE=$(kubectl get nodes -o=jsonpath='{.items[0].metadata.annotations.k3s\.io/internal-ip}' | cut -d '.' --fields '1 2 3')
+          NETWORK_RANGE_END="${NETWORK_BASE}.210"
+          echo $NETWORK_RANGE_END
+        setVariables:
+          - name: NETWORK_RANGE_END
+            sensitive: false
+
+########################################################################
+# Cluster Section
+########################################################################
+  - name: cluster-create
+    actions:
+      - cmd: |
+          K3D_FIX_MOUNTS=1 k3d cluster create k3d-test-cluster --config utils/k3d/k3d-config.yaml
+          k3d kubeconfig merge k3d-test-cluster -o /home/${USER}/cluster-kubeconfig.yaml
+
+  - name: cluster-calico
+    actions:
+      - cmd: |
+          echo "Installing Calico..."
+          kubectl apply --wait=true -f utils/calico/calico.yaml 2>&1 >/dev/null
+          echo "Waiting for Calico to be ready..."
+          kubectl rollout status deployment/calico-kube-controllers -n kube-system --watch --timeout=90s 2>&1 >/dev/null
+          kubectl rollout status daemonset/calico-node -n kube-system --watch --timeout=90s 2>&1 >/dev/null
+          kubectl wait --for=condition=Ready pods --all --all-namespaces 2>&1 >/dev/null
+
+  - name: cluster-destroy
+    actions:
+      - cmd: k3d cluster delete k3d-test-cluster
+
+########################################################################
+# Build Section
+########################################################################
+  - name: build
+    actions:
+      - cmd: mkdir -p build
+      - cmd: |
+          echo "no_progress: true" > zarf-config.yaml
+        dir: build
+
+  - name: clean
+    actions:
+      - cmd: rm -rf ./build
+
+  - name: build-zarf
+    actions:
+      - task: set-os-arch
+      - cmd: |
+          if [ -f ./zarf ] && [ "$(./zarf version)" = "${ZARF_VERSION}" ] ; then exit 0; fi
+          echo "Downloading zarf"
+          curl -sL https://github.com/defenseunicorns/zarf/releases/download/${ZARF_VERSION}/zarf_${ZARF_VERSION}_${PLATFORM}_${ARCH} -o ./zarf
+          chmod +x ./zarf
+        dir: build
+
+  - name: build-zarf-init
+    actions:
+      - cmd: |
+          if [ -f build/zarf-init-amd64-${ZARF_VERSION}.tar.zst ] ; then exit 0; fi
+          echo "Downloading zarf-init-amd64-${ZARF_VERSION}.tar.zst"
+          curl -sL https://github.com/defenseunicorns/zarf/releases/download/${ZARF_VERSION}/zarf-init-amd64-${ZARF_VERSION}.tar.zst -o ./zarf-init-amd64-${ZARF_VERSION}.tar.zst
+        dir: build
+
+  - name: build-metallb
+    actions:
+      - cmd: ls -la
+        dir: build
+      - cmd: ./zarf package pull oci://ghcr.io/defenseunicorns/packages/metallb:${METALLB_VERSION}-amd64
+        dir: build
+
+  - name: build-test-pkg-deps
+    actions:
+      - cmd: |
+          ./zarf package create ../utils/pkg-deps/namespaces/      --skip-sbom --confirm
+          ./zarf package create ../utils/pkg-deps/gitlab/ --skip-sbom --confirm
+          ./zarf package create ../utils/pkg-deps/rbac/    --skip-sbom --confirm
+        dir: build
+
+  - name: build-uds-capability-gitlab-runner
+    actions:
+      - cmd: ./zarf package create ../ --skip-sbom --confirm
+        dir: build
+
+########################################################################
+# Deploy Section
+########################################################################
+  - name: deploy-init
+    actions:
+      - cmd: ./zarf init --confirm --components=git-server
+        dir: build
+
+  - name: deploy-metallb
+    actions:
+      - task: set-network-range
+      - cmd: ./zarf package deploy zarf-package-metallb-amd64-${METALLB_VERSION}.tar.zst --set IP_ADDRESS_POOL=${NETWORK_RANGE_START}-${NETWORK_RANGE_END} --confirm
+        dir: build
+
+  - name: deploy-dubbd-k3d
+    actions:
+      - cmd: ./zarf package deploy zarf-package-dubbd-k3d-amd64-${DUBBD_K3D_VERSION}.tar.zst --confirm
+        dir: build
+
+  - name: deploy-test-pkg-deps
+    actions:
+      - task: deploy-namespaces
+      - task: deploy-gitlab
+      - task: deploy-rbac
+
+  - name: deploy-namespaces
+    actions:
+      - cmd: 
+          ./zarf package deploy zarf-package-gitlab-runner-namespaces-* --confirm
+        dir: build
+
+  - name: deploy-gitlab
+    actions:
+      - cmd: ./zarf package deploy zarf-package-gitlab-runner-gitlab-*   --confirm
+        dir: build
+
+  - name: deploy-rbac
+    actions:
+      - cmd: ./zarf package deploy zarf-package-gitlab-runner-rbac-*      --confirm
+        dir: build
+
+  - name: deploy-uds-capability-gitlab-runner
+    actions:
+      - cmd: ./zarf package deploy zarf-package-gitlab-runner-amd*.tar.zst --confirm --set GITLAB_RUNNER_DEPENDS_ON="[]"
+        dir: build
