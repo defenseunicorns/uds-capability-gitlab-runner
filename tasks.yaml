@@ -34,6 +34,7 @@ tasks:
       - task: build-zarf
       - task: build-zarf-init
       - task: build-metallb
+      - task: build-dubbd-k3d
       - task: build-test-pkg-deps
       - task: build-uds-capability-gitlab-runner
 
@@ -145,9 +146,14 @@ tasks:
 
   - name: build-metallb
     actions:
-      - cmd: ls -la
-        dir: build
       - cmd: ./zarf package pull oci://ghcr.io/defenseunicorns/packages/metallb:${METALLB_VERSION}-amd64
+        dir: build
+
+  - name: build-dubbd-k3d
+    actions:
+      - cmd: |
+          if [ -f build/zarf-package-dubbd-k3d-amd64-${DUBBD_K3D_VERSION}.tar.zst ] ; then exit 0; fi
+          ./zarf package pull oci://ghcr.io/defenseunicorns/packages/dubbd-k3d:${DUBBD_K3D_VERSION}-amd64 --oci-concurrency 12
         dir: build
 
   - name: build-test-pkg-deps
