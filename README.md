@@ -80,35 +80,30 @@ export REGISTRY1_USERNAME="YOUR-USERNAME-HERE"
 export REGISTRY1_TOKEN="YOUR-TOKEN-HERE"
 echo $REGISTRY1_TOKEN | build/zarf tools registry login registry1.dso.mil --username $REGISTRY1_USERNAME --password-stdin
 
-# ghcr.io (To access oci packages needed)
-export GH_USERNAME="YOUR-USERNAME-HERE"
-export GH_TOKEN="YOUR-TOKEN-HERE"
-echo $GH_TOKEN | build/zarf tools registry login ghcr.io --username $GH_USERNAME --password-stdin
-
 set -o history
 ```
 
-### Deploy Everything
+### Build and Deploy Everything via Makefile and local package
 
 ```bash
-# This will destroy and create a compatible k3d cluster then it will run make build/all and make deploy/all. Follow the breadcrumbs in the Makefile to see what and how its doing it.
-make cluster/full
+# This will run make build/all, make cluster/reset, and make deploy/all. Follow the breadcrumbs in the Makefile to see what and how its doing it.
+make all
 ```
 
-## Import Zarf Skeleton
-
-Below is an example of how to import this projects zarf skeleton into your zarf.yaml. The [uds-package-sofware-factory](https://github.com/defenseunicorns/uds-package-software-factory.git) does this with a subset of the uds-capability projects.
+## Declare This Package In Your UDS Bundle
+Below is an example of how to use this projects zarf package in your UDS Bundle
 
 ```yaml
-components:
-  - name: values
-    required: true
-    files:
-      - source: <path-to-the-values-you-want-to-use>
-        target: values-gitlab-runner.yaml
+kind: UDSBundle
+metadata:
+  name: example-bundle
+  description: An Example UDS Bundle
+  version: 0.0.1
+  architecture: amd64
+
+zarf-packages:
+  # Gitlab Runner
   - name: gitlab-runner
-    required: true
-    import:
-      name: gitlab-runner
-      url: oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner:0.0.4-skeleton
+    repository: ghcr.io/defenseunicorns/uds-capability/gitlab-runner
+    ref: x.x.x
 ```
