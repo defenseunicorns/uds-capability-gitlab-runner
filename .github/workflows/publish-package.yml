@@ -73,7 +73,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and publish gitlab runner package
+      ####
+      # Build and publish packages
+      ####
+      - name: Build and publish dev-dependency gitlab runner rbac package
+        run: cd utils/pkg-deps/rbac && zarf package create --confirm --no-progress --output oci://ghcr.io/defenseunicorns/uds-capability/gitlab-runner/dev-dependency
+
+      - name: Publish gitlab runner package
         run: zarf package publish zarf-package-gitlab-runner-amd64-*.tar.zst oci://ghcr.io/defenseunicorns/uds-capability --no-progress
 
       - name: Publish gitlab runner skeleton
