@@ -1,14 +1,14 @@
 # The version of Zarf to use. To keep this repo as portable as possible the Zarf binary will be downloaded and added to
 # the build folder.
 # renovate: datasource=github-tags depName=defenseunicorns/zarf
-ZARF_VERSION := v0.30.1
+ZARF_VERSION := v0.31.2
 
 # The version of the build harness container to use
 BUILD_HARNESS_REPO := ghcr.io/defenseunicorns/build-harness/build-harness
 # renovate: datasource=docker depName=ghcr.io/defenseunicorns/build-harness/build-harness
-BUILD_HARNESS_VERSION := 1.10.2
+BUILD_HARNESS_VERSION := 1.14.2
 # renovate: datasource=docker depName=ghcr.io/defenseunicorns/packages/dubbd-k3d extractVersion=^(?<version>\d+\.\d+\.\d+)
-DUBBD_K3D_VERSION := 0.12.1
+DUBBD_K3D_VERSION := 0.13.0
 
 # Figure out which Zarf binary we should use based on the operating system we are on
 ZARF_BIN := zarf
@@ -89,8 +89,6 @@ test: ## Run all automated tests. Requires access to an AWS account. Costs money
 	-e GIT_BRANCH \
 	-e REGISTRY1_USERNAME \
 	-e REGISTRY1_PASSWORD \
-	-e GHCR_USERNAME \
-	-e GHCR_PASSWORD \
 	-e AWS_REGION \
 	-e AWS_DEFAULT_REGION \
 	-e AWS_ACCESS_KEY_ID \
@@ -157,7 +155,7 @@ build/zarf-init: | build ## Download the init package
 	if [ -f build/zarf-init-amd64-$(ZARF_VERSION).tar.zst ] ; then exit 0; fi && \
 	echo "Downloading zarf-init-amd64-$(ZARF_VERSION).tar.zst" && \
 	curl -sL https://github.com/defenseunicorns/zarf/releases/download/$(ZARF_VERSION)/zarf-init-amd64-$(ZARF_VERSION).tar.zst -o build/zarf-init-amd64-$(ZARF_VERSION).tar.zst
-	
+
 .PHONY: build/dubbd-k3d
 build/dubbd-k3d: | build/zarf ## Download dubbd k3d oci package
 	if [ -f build/zarf-package-dubbd-k3d-amd64-$(DUBBD_K3D_VERSION).tar.zst ] ; then exit 0; fi && \
