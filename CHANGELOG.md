@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3](https://github.com/defenseunicorns/uds-capability-gitlab-runner/compare/v0.1.2...v0.1.3) (2023-12-14)
+
+
+### Features
+
+* Initial oscal ([#25](https://github.com/defenseunicorns/uds-capability-gitlab-runner/issues/25)) ([14f17b8](https://github.com/defenseunicorns/uds-capability-gitlab-runner/commit/14f17b8a1046598089aa0e88e0d33091a8e49921))
+
+
+### Miscellaneous
+
+* Update to gitlab-runner 0.58.1-bb.0 ([#29](https://github.com/defenseunicorns/uds-capability-gitlab-runner/issues/29)) ([3f17924](https://github.com/defenseunicorns/uds-capability-gitlab-runner/commit/3f179244432d7f13f473639eb42d7aa7774c00b2))
+* Update zarf and DUBBD ([3f17924](https://github.com/defenseunicorns/uds-capability-gitlab-runner/commit/3f179244432d7f13f473639eb42d7aa7774c00b2))
+
 ## [0.1.2](https://github.com/defenseunicorns/uds-capability-gitlab-runner/compare/v0.1.1...v0.1.2) (2023-11-30)
 
 
