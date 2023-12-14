@@ -6,7 +6,7 @@ application:
   repository: https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git
   ref:
     # renovate: datasource=gitlab-tags depName=big-bang/product/packages/gitlab-runner versioning=loose registryUrl=https://repo1.dso.mil
-    tag: 0.52.0-bb.7
+    tag: 0.58.1-bb.0
   values: |
     ###ZARF_VAR_GITLAB_RUNNER_VALUES###
   dependsOn:
@@ -50,7 +50,7 @@ application:
     # When istio injected, add an annotation with the istio version to the manager pods only
     podAnnotations:
       bigbang.dev/istioVersion: ###ZARF_VAR_ISTIO_VERSION###
-    
+
     monitoring:
       enabled: true
 
