@@ -1,14 +1,14 @@
 # The version of Zarf to use. To keep this repo as portable as possible the Zarf binary will be downloaded and added to
 # the build folder.
 # renovate: datasource=github-tags depName=defenseunicorns/zarf
-ZARF_VERSION := v0.31.4
+ZARF_VERSION := v0.32.2
 
 # The version of the build harness container to use
 BUILD_HARNESS_REPO := ghcr.io/defenseunicorns/build-harness/build-harness
 # renovate: datasource=docker depName=ghcr.io/defenseunicorns/build-harness/build-harness
 BUILD_HARNESS_VERSION := 1.14.8
 # renovate: datasource=docker depName=ghcr.io/defenseunicorns/packages/dubbd-k3d extractVersion=^(?<version>\d+\.\d+\.\d+)
-DUBBD_K3D_VERSION := 0.15.0
+DUBBD_K3D_VERSION := 0.17.0
 
 # Figure out which Zarf binary we should use based on the operating system we are on
 ZARF_BIN := zarf
@@ -159,7 +159,7 @@ build/zarf-init: | build ## Download the init package
 .PHONY: build/dubbd-k3d
 build/dubbd-k3d: | build/zarf ## Download dubbd k3d oci package
 	if [ -f build/zarf-package-dubbd-k3d-amd64-$(DUBBD_K3D_VERSION).tar.zst ] ; then exit 0; fi && \
-	cd build && ./zarf package pull oci://ghcr.io/defenseunicorns/packages/dubbd-k3d:$(DUBBD_K3D_VERSION)-amd64 --oci-concurrency 12
+	cd build && ./zarf package pull oci://ghcr.io/defenseunicorns/packages/dubbd-k3d:$(DUBBD_K3D_VERSION) -a amd64 --oci-concurrency 12
 
 build/test-pkg-deps: | build/zarf ## Build package dependencies for testing
 	cd build && ./zarf package create ../utils/pkg-deps/namespaces/ --skip-sbom --confirm
