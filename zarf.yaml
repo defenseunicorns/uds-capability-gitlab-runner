@@ -39,11 +39,11 @@ components:
         valuesFiles:
           - gitlab-runner-flux-values.yaml
     repos:
-      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git@0.58.1-bb.0
+      - https://repo1.dso.mil/big-bang/product/packages/gitlab-runner.git@0.59.1-bb.1
     images:
-      - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v16.5.0
-      - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v16.5.0
-      - registry1.dso.mil/ironbank/redhat/ubi/ubi8:8.7
+      - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner:v16.6.0
+      - registry1.dso.mil/ironbank/gitlab/gitlab-runner/gitlab-runner-helper:v16.6.0
+      - registry1.dso.mil/ironbank/redhat/ubi/ubi9:9.3
     actions:
       onDeploy:
         after:
