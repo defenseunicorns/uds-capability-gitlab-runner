@@ -2,7 +2,7 @@
 kind: ZarfPackageConfig
 metadata:
   name: gitlab-runner-gitlab
-  version: "0.0.2"
+  version: "0.0.3"
   architecture: amd64
   yolo: true
 
@@ -13,6 +13,7 @@ components:
       - name: kyverno-exceptions
         files:
           - policy-exceptions/registry.yaml
+          - policy-exceptions/additional-exceptions.yaml
   - name: gitlab-yolo
     required: true
     charts:

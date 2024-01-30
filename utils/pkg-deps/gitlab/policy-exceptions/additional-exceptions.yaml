@@ -1,0 +1,18 @@
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: gitlab-additional-exceptions
+  namespace: gitlab
+spec:
+  exceptions:
+  - policyName: restrict-host-path-write
+    ruleNames:
+    - require-readonly-hostpath
+  - policyName: require-non-root-group
+    ruleNames:
+    - run-as-group
+  match:
+    any:
+    - resources:
+        namespaces:
+        - gitlab
